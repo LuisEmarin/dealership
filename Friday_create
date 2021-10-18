@@ -1,0 +1,89 @@
+CREATE TABLE IF NOT EXISTS public."Mechanic"
+(
+    mech_id serial,
+    first_name character varying(150),
+    last_name character varying(150),
+    phone character varying(150),
+    email character varying(150),
+    PRIMARY KEY (mech_id)
+);
+
+CREATE TABLE IF NOT EXISTS Parts_Inverntory
+(
+    part_id serial,
+    part_name character varying(100),
+    part_quantity integer,
+    PRIMARY KEY (part_id)
+);
+
+CREATE TABLE IF NOT EXISTS Service_Repair
+(
+    service_id serial,
+    service_type character varying(100),
+    service_date date,
+    part_id integer,
+    mech_id serial,
+    PRIMARY KEY (service_id),
+    FOREIGN KEY (part_id) REFERENCES Parts_Inverntory(part_id), 
+    FOREIGN KEY (mech_id) REFERENCES public."Mechanic"(mech_id) 
+
+);
+
+CREATE TABLE Salesperson
+(
+	salesperson_id SERIAL,
+	first_name VARCHAR(150),
+	last_name VARCHAR(150),
+	phone VARCHAR(150),
+	email VARCHAR(150),
+	PRIMARY KEY (salesperson_id)
+);
+
+CREATE TABLE Customer
+(
+	customer_id SERIAL,
+	first_name character varying(150),
+    last_name character varying(150),
+	email VARCHAR(150),
+	address VARCHAR(200),
+	billing_info VARCHAR(40),
+	service_id INTEGER,
+	PRIMARY KEY (customer_id),
+	FOREIGN KEY (service_id) REFERENCES Service_Repair(service_id)
+);
+
+CREATE TABLE Car_inventory
+(
+	car_id SERIAL,
+	car_model VARCHAR(15),
+	car_make VARCHAR(15),
+	car_year INTEGER,
+	salesperson_id INTEGER,
+	customer_id INTEGER,
+	PRIMARY KEY (car_id),
+	FOREIGN KEY (salesperson_id) REFERENCES Salesperson(salesperson_id),
+	FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+);
+
+CREATE TABLE Invoice
+(
+	sale_invoice_id SERIAL,
+	car_price NUMERIC(10,2),
+	sale_invoice_date DATE,
+	part_price NUMERIC(16,2),
+	invoice_type VARCHAR(150),
+	car_id SERIAL,
+	salesperson_id INTEGER,
+	customer_id INTEGER,
+	service_id serial,
+	part_id integer,
+	PRIMARY KEY (sale_invoice_id),
+	FOREIGN KEY (car_id) REFERENCES Car_inventory(car_id),
+	FOREIGN KEY (salesperson_id) REFERENCES Salesperson(salesperson_id),
+	FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
+	FOREIGN KEY (service_id) REFERENCES Service_Repair(service_id),
+	FOREIGN KEY (part_id) REFERENCES Parts_Inverntory(part_id)
+);
+
+
+
